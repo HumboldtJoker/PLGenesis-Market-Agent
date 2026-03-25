@@ -1,4 +1,4 @@
-.PHONY: setup install run autonomous scan lint check clean
+.PHONY: setup install run autonomous scan dashboard lint check clean
 
 setup:
 	python3 -m venv .venv
@@ -17,6 +17,12 @@ autonomous:
 
 scan:
 	python3 main.py --scan
+
+dashboard:
+	python3 -m dashboard.app
+
+dashboard-run:
+	python3 -m dashboard.app --run
 
 lint:
 	python3 -m py_compile main.py

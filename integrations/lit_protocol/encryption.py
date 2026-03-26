@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-LIT_NETWORK = "cayenne"  # Lit Protocol test network for hackathon demo
+LIT_NETWORK = "chipotle"  # Lit Protocol network (migrated from Naga, which is sunsetting)
 DEMO_MODE_MARKER = "__lit_demo_mode__"
 
 

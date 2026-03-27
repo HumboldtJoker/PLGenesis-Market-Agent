@@ -132,15 +132,15 @@
 - **Timestamp:** 1:10–1:15
 - **Type:** Screen capture
 - **Duration:** 5s
-- **Description:** Terminal output showing the PLAN phase. Header: `[PLAN] Building thesis for NVDA...` followed by the ReAct chain: `Thought: NVDA shows unusual volume + positive FRED signals...` → `Action: fetch_fundamentals("NVDA")` → `Observation: P/E 34.2, revenue growth 122%...` → `Thought: Strong thesis. Calculating position size...` Clean formatting with indented reasoning steps.
-- **Narration:** *"Phase two: Plan. The agent builds an investment thesis using chain-of-thought reasoning."*
+- **Description:** Terminal or dashboard output showing PLAN phase. Use our actual run data: Agent identified healthcare sector diversification, analyzed JNJ as defensive play. ReAct chain: `Thought: Portfolio has 100% cash, CAUTIOUS regime favors defensive quality...` → `Action: get_technical_indicators("JNJ")` → `Observation: RSI 42, below 50-day SMA...` → `Thought: Defensive healthcare with strong dividend. Calculating position size with 0.5x macro modifier...`
+- **Narration:** *"Phase two: Plan. Chain-of-thought reasoning across technicals, sentiment, and macro. In today's run: VIX at 27, the agent went defensive — healthcare."*
 
 ### Scene 16 — Execute Phase
 - **Timestamp:** 1:15–1:20
 - **Type:** Screen capture
 - **Duration:** 5s
-- **Description:** Terminal output showing the EXECUTE phase. Header: `[EXECUTE] Submitting order...` followed by: `Safety check: 8/8 layers PASSED ✓` (each layer listed with green checkmark), then `Order: BUY 15 shares NVDA @ market`, `Alpaca API response: filled @ $142.37`, `Position value: $2,135.55 (4.2% of portfolio)`. Clean, structured output.
-- **Narration:** *"Phase three: Execute. Every order passes all eight safety layers before submission."*
+- **Description:** Dashboard or terminal showing EXECUTE phase. Use actual run: `Safety check: 8/8 layers PASSED` → `Order: BUY 98 shares JNJ @ market` → `Alpaca: filled @ $242.09` → `Position value: $23,724 (24% of portfolio, macro-adjusted)`. Show the dashboard with the EXECUTE phase lighting up and safety counter incrementing.
+- **Narration:** *"Phase three: Execute. Every order passes all eight safety layers. Today: 98 shares of Johnson & Johnson at $242 — a defensive position sized for a cautious regime."*
 
 ### Scene 17 — Execute Visual Metaphor
 - **Timestamp:** 1:20–1:25
@@ -223,8 +223,8 @@
 - **Timestamp:** 2:05–2:10
 - **Type:** Screen capture
 - **Duration:** 5s
-- **Description:** Clean infographic on dark background (solarpunk palette). Four panels stacked vertically, each with an icon and one-line description: (1) Position Limits — "Max 5% per position" with a gauge icon, (2) Macro-Aware Sizing — "Reduces exposure in recession regimes" with a wave icon, (3) Sector Concentration — "Max 25% per sector" with a pie chart icon, (4) Circuit Breakers — "Halts trading at -3% daily loss" with a stop sign icon. Each panel animates in sequentially.
-- **Narration:** *"Position limits cap any single bet. Macro-aware sizing shrinks exposure when FRED signals recession. Sector concentration prevents overweight. Circuit breakers halt all trading if losses exceed thresholds."*
+- **Description:** Clean infographic on dark background (solarpunk palette). Four panels stacked vertically, each with an icon and one-line description: (1) Position Limits — "Max 30% per position" with a gauge icon, (2) Macro-Aware Sizing — "0.5x in CAUTIOUS, 0x in CRITICAL" with a wave icon, (3) Sector Concentration — "Flags above 40%" with a pie chart icon, (4) Circuit Breakers — "Halts at 5% daily loss" with a stop sign icon. Each panel animates in sequentially.
+- **Narration:** *"Position limits cap any single bet at 30%. Macro-aware sizing cuts exposure in half when FRED data signals caution — to zero in a crisis. Sector concentration flags overweight. Circuit breakers kill all trading at 5% daily drawdown."*
 
 ### Scene 27 — Safety Layers 5–8
 - **Timestamp:** 2:10–2:15
@@ -245,8 +245,8 @@
 - **Timestamp:** 2:20–2:25
 - **Type:** Screen capture
 - **Duration:** 5s
-- **Description:** Terminal showing a simulated safety rejection. The agent attempts: `[EXECUTE] BUY 500 shares TSLA @ market` → Safety layer 1 (Position Limits): `REJECTED — would exceed 5% position limit (requested: 12.4%)` → `[PLAN] Adjusting position size...` → `[EXECUTE] BUY 42 shares TSLA @ market` → `Safety check: 8/8 PASSED ✓`. Red rejection text, then green approval.
-- **Narration:** *"They're code, not prompts."*
+- **Description:** Terminal showing real safety behavior. The agent's EXECUTE phase ran position sizing on 5 candidates in the CAUTIOUS regime — the macro overlay halved every position. Show: `calculate_position_size: 0.5x macro modifier applied` → `validate_order: position_size_ok, sector_concentration_ok, macro_regime_checked` → contrast with a hypothetical: `CRITICAL regime: position modifier 0.0x → ALL TRADES BLOCKED`. Red block, then the real green approval.
+- **Narration:** *"They're code, not prompts. In a CRITICAL regime, the modifier goes to zero. No trades. Period."*
 
 ### Scene 30 — Safety Metaphor Close
 - **Timestamp:** 2:25–2:30
@@ -306,7 +306,7 @@
 - **Duration:** 5s
 - **Wan 2.1 Prompt:** `Cinematic final shot — extreme wide angle of a vast solarpunk cityscape at golden hour, rooftop gardens on every building, solar panels gleaming, holographic data streams flowing gently between buildings like rivers of light, camera slowly craning upward toward a brilliant sunset sky with wispy clouds, a single small luminous cyan point of light rises from the city center into the sky, photorealistic, epic scale, hopeful and triumphant, orchestral finale energy, the light fades to warm white`
 - **Negative Prompt:** `cartoon, anime, text, watermark, low quality, blurry, dark, night, dystopian, pollution, destruction, people close-up`
-- **Narration:** *[Title card fades in over final frames: "Sovereign Market Intelligence Agent" — then beat — fade to black]*
+- **Narration:** *[Title card fades in over final frames: "Sovereign Market Intelligence Agent" — beat — subtitle: "Let the agent cook." — fade to black]*
 
 ---
 
@@ -337,7 +337,8 @@
 - **Upscaling:** Optional 2× Real-ESRGAN pass for hero scenes (01, 04, 35, 36)
 
 ### Screen Capture Production
-- Record terminal sessions with `asciinema` or OBS
+- **Prefer the live dashboard** (`make dashboard-run`) for demo scenes — it has phase indicators, real-time execution feed, safety counter, and tool chips. Much more visual than raw terminal.
+- For terminal-specific scenes (launch, raw output), record with `asciinema` or OBS
 - Use a custom terminal theme matching the solarpunk palette:
   - Background: `#0a1a0f` (very dark green-black)
   - Text: `#c8d6c0` (soft sage)

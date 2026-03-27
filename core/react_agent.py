@@ -45,6 +45,16 @@ class ReActAgent:
         self.execution_log: List[Dict] = []
 
     def _build_system_prompt(self) -> str:
+        # Build market context from KG if available
+        market_context = ""
+        try:
+            from memory.market_context import build_market_context
+            market_context = build_market_context()
+            if market_context:
+                market_context = f"\nMARKET MEMORY (from knowledge graph):\n{market_context}\n"
+        except Exception:
+            pass  # KG not available — agent runs without historical context
+
         return f"""You are an autonomous market intelligence agent using ReAct methodology.
 
 Your mission is to provide thorough, data-driven investment analysis by:
@@ -52,7 +62,7 @@ Your mission is to provide thorough, data-driven investment analysis by:
 2. Using available tools to gather real market data
 3. Reasoning through information systematically
 4. Providing clear, actionable recommendations
-
+{market_context}
 RULES:
 - Always show reasoning before taking actions
 - Use tools for real data — never fabricate numbers
@@ -60,6 +70,7 @@ RULES:
 - You MUST reach a FINAL_ANSWER. If uncertain, state your uncertainty in the answer.
 - Provide specific recommendations with clear rationale
 - Every decision must pass through safety guardrails before execution
+- Use MARKET MEMORY above to inform your analysis — learn from past regimes and outcomes
 
 AVAILABLE TOOLS:
 {self.tools.get_descriptions()}

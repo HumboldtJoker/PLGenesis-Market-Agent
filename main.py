@@ -53,6 +53,13 @@ from integrations.storacha.storage import upload_execution_log, is_cli_available
 from integrations.lit_protocol.access_control import classify_report_tier
 from integrations.lit_protocol.encryption import encrypt_report
 
+# ── Memory ───────────────────────────────────────────────────────────────────
+try:
+    from memory.market_context import enrich_from_run
+    HAS_MEMORY = True
+except ImportError:
+    HAS_MEMORY = False
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -207,6 +214,14 @@ def run_autonomous():
             logger.info("Execution log uploaded to IPFS: %s", upload_result.get("cid"))
     else:
         logger.info("Storacha CLI not available — log stored locally only")
+
+    # Enrich knowledge graph with this run's data
+    if HAS_MEMORY:
+        try:
+            enrich_from_run(result)
+            logger.info("Knowledge graph enriched from run")
+        except Exception as e:
+            logger.warning("KG enrichment failed (non-fatal): %s", e)
 
     # Print summary
     print(f"\n{'='*60}")

@@ -91,6 +91,13 @@ SP500_SECTOR_WEIGHTS = {
     "Basic Materials": 2.0,
 }
 
+# ── Market Memory Database ────────────────────────────────────────────────────
+MARKET_DB_HOST = os.getenv("MARKET_DB_HOST", "localhost")
+MARKET_DB_PORT = int(os.getenv("MARKET_DB_PORT", "5434"))
+MARKET_DB_USER = os.getenv("MARKET_DB_USER", "market")
+MARKET_DB_PASS = os.getenv("MARKET_DB_PASS", "market_2026")
+MARKET_DB_NAME = os.getenv("MARKET_DB_NAME", "market_memory")
+
 # ── Ensure directories exist ─────────────────────────────────────────────────
 DATA_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)

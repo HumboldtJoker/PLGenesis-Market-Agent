@@ -122,7 +122,7 @@ def build_agent() -> ReActAgent:
     ))
 
     # ── Execution tools ──────────────────────────────────────────────────
-    executor = OrderExecutor(mode="local" if ALPACA_PAPER else "alpaca")
+    executor = OrderExecutor(mode="alpaca")
 
     agent.tools.register(Tool(
         name="execute_trade",

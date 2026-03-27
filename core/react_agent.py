@@ -56,8 +56,8 @@ Your mission is to provide thorough, data-driven investment analysis by:
 RULES:
 - Always show reasoning before taking actions
 - Use tools for real data — never fabricate numbers
-- Consider multiple perspectives: fundamentals, technicals, sentiment, macro, risk
-- Be explicit about uncertainties and limitations
+- Be efficient: gather the data you need, then conclude. Do NOT exceed 8 tool calls.
+- You MUST reach a FINAL_ANSWER. If uncertain, state your uncertainty in the answer.
 - Provide specific recommendations with clear rationale
 - Every decision must pass through safety guardrails before execution
 
@@ -173,7 +173,7 @@ Action Input: [Your complete analysis and recommendation as JSON]
 
             message = self.client.messages.create(
                 model=self.model,
-                max_tokens=2000,
+                max_tokens=4000,
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_prompt}],
             )

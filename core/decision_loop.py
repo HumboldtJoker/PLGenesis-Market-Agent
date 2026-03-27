@@ -59,10 +59,14 @@ class DecisionLoop:
         logger.info("DISCOVER phase starting for session %s", self.session_id)
 
         result = self.agent.run(
-            "Scan the current market environment. Check VIX levels and macro regime, "
-            "then identify 3–5 ticker candidates with strong technical signals. "
-            "Focus on sectors with favorable congressional trading patterns. "
-            "Return a JSON object with candidates and reasoning.",
+            "TASK: Identify 3 ticker candidates for trading.\n\n"
+            "STEP 1: Call get_market_regime to check current conditions.\n"
+            "STEP 2: Call get_technical_indicators for 3 tickers you think have opportunity "
+            "(consider defensive sectors like XLU, XLP, XLV in bearish regimes, "
+            "or momentum sectors like XLK, NVDA, AAPL in bullish regimes).\n"
+            "STEP 3: Use FINAL_ANSWER with a JSON object listing your candidates: "
+            '{\"candidates\": [\"TICKER1\", \"TICKER2\", \"TICKER3\"], '
+            '"regime": "...", "reasoning": "..."}',
             verbose=False,
         )
 
@@ -81,12 +85,15 @@ class DecisionLoop:
         logger.info("PLAN phase starting")
 
         result = self.agent.run(
-            f"Run comprehensive analysis on these candidates: {candidates}. "
-            "For each, analyze: technical indicators (SMA, RSI, MACD, Bollinger), "
-            "news sentiment, congressional trading patterns, macro overlay, "
-            "and portfolio correlation risk. "
-            "Rank by risk-adjusted conviction and recommend position sizes. "
-            "Return a JSON object with ranked recommendations and risk parameters.",
+            f"TASK: Analyze these candidates and recommend trades: {candidates}\n\n"
+            "STEP 1: For each ticker, call get_technical_indicators.\n"
+            "STEP 2: Call get_news_sentiment for the top candidate.\n"
+            "STEP 3: Call calculate_position_size for any BUY candidates "
+            "(use portfolio_value=100000, current_price from technicals).\n"
+            "STEP 4: Use FINAL_ANSWER with a JSON object: "
+            '{\"trades\": [{\"ticker\": \"...\", \"action\": \"BUY\", '
+            '"quantity\": N, \"reasoning\": \"...\"}], '
+            '"rejected\": [{\"ticker\": \"...\", \"reason\": \"...\"}]}',
             verbose=False,
         )
 
@@ -107,11 +114,15 @@ class DecisionLoop:
         mode = "paper" if ALPACA_PAPER else "live"
 
         result = self.agent.run(
-            f"Execute the following trade plan in {mode} mode: {plan}. "
-            "Before each trade: validate position size, check sector concentration, "
-            "verify macro regime allows the position, and confirm stop-loss levels. "
-            "Execute only trades that pass ALL safety checks. "
-            "Return a JSON object with executed trades and any rejected trades with reasons.",
+            f"TASK: Execute these trades in {mode} mode: {plan}\n\n"
+            "For each trade in the plan:\n"
+            "STEP 1: Call validate_order with the trade parameters.\n"
+            "STEP 2: If validated, call execute_trade.\n"
+            "STEP 3: After all trades, call get_portfolio_summary.\n"
+            "STEP 4: Use FINAL_ANSWER with a JSON object: "
+            '{\"executed\": [{\"ticker\": \"...\", \"quantity\": N, \"price\": X}], '
+            '"rejected\": [{\"ticker\": \"...\", \"reason\": \"...\"}], '
+            '"portfolio_after\": {\"cash\": X, \"value\": X}}',
             verbose=False,
         )
 

@@ -24,6 +24,12 @@ dashboard:
 dashboard-run:
 	python3 -m dashboard.app --run
 
+monitor:
+	python3 monitor.py
+
+monitor-dashboard:
+	python3 monitor.py --dashboard
+
 lint:
 	python3 -m py_compile main.py
 	find . -name "*.py" -not -path "*/__pycache__/*" -not -path "./.venv/*" -exec python3 -m py_compile {} \;

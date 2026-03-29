@@ -85,14 +85,17 @@ class DecisionLoop:
         logger.info("PLAN phase starting")
 
         result = self.agent.run(
-            f"TASK: Analyze these candidates and recommend trades: {candidates}\n\n"
-            "STEP 1: For each ticker, call get_technical_indicators.\n"
-            "STEP 2: Call get_news_sentiment for the top candidate.\n"
-            "STEP 3: Call calculate_position_size for any BUY candidates "
-            "(use portfolio_value=100000, current_price from technicals).\n"
-            "STEP 4: Use FINAL_ANSWER with a JSON object: "
-            '{\"trades\": [{\"ticker\": \"...\", \"action\": \"BUY\", '
-            '"quantity\": N, \"reasoning\": \"...\"}], '
+            f"TASK: Analyze these candidates and build a trade plan: {candidates}\n\n"
+            "FIRST: Call get_portfolio_summary to check current holdings.\n"
+            "If any position has a SELL signal or is losing money, add a SELL trade.\n"
+            "Exiting a bad position is a DEFENSIVE trade — it reduces risk.\n\n"
+            "THEN: For each BUY candidate, call get_technical_indicators.\n"
+            "Call calculate_position_size for BUY candidates "
+            "(use portfolio_value from portfolio summary).\n"
+            "Target 4+ positions across different sectors for diversification.\n\n"
+            "Use FINAL_ANSWER with a JSON object: "
+            '{\"trades\": [{\"ticker\": \"...\", \"action\": \"BUY|SELL\", '
+            '"quantity\": N, \"type\": \"defensive|speculative\", \"reasoning\": \"...\"}], '
             '"rejected\": [{\"ticker\": \"...\", \"reason\": \"...\"}]}',
             verbose=False,
         )
@@ -115,12 +118,17 @@ class DecisionLoop:
 
         result = self.agent.run(
             f"TASK: Execute these trades in {mode} mode: {plan}\n\n"
-            "For each trade in the plan:\n"
-            "STEP 1: Call validate_order with the trade parameters.\n"
-            "STEP 2: If validated, call execute_trade.\n"
-            "STEP 3: After all trades, call get_portfolio_summary.\n"
-            "STEP 4: Use FINAL_ANSWER with a JSON object: "
-            '{\"executed\": [{\"ticker\": \"...\", \"quantity\": N, \"price\": X}], '
+            "IMPORTANT: There are TWO types of trades:\n"
+            "  1. DEFENSIVE trades (SELL losing positions, diversify concentrated portfolio)\n"
+            "     — These are SAFETY trades. Execute them even in cautious regimes.\n"
+            "     — Exiting a losing SELL-signal position is REDUCING risk, not adding it.\n"
+            "  2. SPECULATIVE trades (BUY new positions for growth)\n"
+            "     — These require full safety validation in the current regime.\n\n"
+            "For SELL/defensive trades: call execute_trade directly.\n"
+            "For BUY/speculative trades: call validate_order first, then execute_trade.\n"
+            "After all trades: call get_portfolio_summary.\n"
+            "Use FINAL_ANSWER with a JSON object: "
+            '{\"executed\": [{\"ticker\": \"...\", \"action\": \"...\", \"quantity\": N, \"type\": \"defensive|speculative\"}], '
             '"rejected\": [{\"ticker\": \"...\", \"reason\": \"...\"}], '
             '"portfolio_after\": {\"cash\": X, \"value\": X}}',
             verbose=False,
